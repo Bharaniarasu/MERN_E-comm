@@ -7,15 +7,17 @@
     "start": "nodemon server/server.js",
     "dev": "set NODE_ENV=development&&nodemon server/server.js",
     "prod": "set NODE_ENV=production&&nodemon server/server.js",
-    "seed": "node server/seeder/seeder.js",
+    "seed": "node server/utils/seeder.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.1.0",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
-    "mongoose": "^7.1.2"
+    "mongoose": "^7.1.2",
+    "validator": "^13.9.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.22"

@@ -1,9 +1,16 @@
 const catchAsyncErrors = require("../middlewares/catchAsyncErrors");
 const productModel = require("../models/productModel");
+const ApiFeatures = require("../utils/apiFeatures");
 const ErrorHandler = require("../utils/errorHandler");
 //get all products - /api/v1/products
 exports.getProducts = async (req, res, next) => {
-  const products = await productModel.find();
+  const productPerPage = 3;
+  const filteredProduct = new ApiFeatures(productModel.find(), req.query)
+    .search()
+    .filter()
+    .paginate(productPerPage);
+  //filterProduct returns a query
+  const products = await filteredProduct.query;
   res.status(200).json({
     success: true,
     count: products.length,
@@ -20,6 +27,7 @@ exports.newProduct = catchAsyncErrors(async (req, res, next) => {
   });
 });
 //get a single product values - /api/v1/product/:id (get)
+//async error captured when enter an invalid product ID
 exports.getSingleProduct = catchAsyncErrors(async (req, res, next) => {
   const product = await productModel.findById(req.params.id);
   //validation for show datas for a valid id // if no datas for given id 404 will trigger
