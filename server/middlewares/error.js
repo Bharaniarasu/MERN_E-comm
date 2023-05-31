@@ -28,6 +28,11 @@ module.exports = (err, req, res, next) => {
       message = `Resource NOT FOUND for this ${err.path}`;
       error = new Error(message);
     }
+    //handle error for chech DUplicate values
+    if (err.code == 11000) {
+      message = `Dulicate ${Object.keys(err.keyValue)}`;
+      error = new Error(message);
+    }
 
     res.status(err.statuscode).json({
       success: false,

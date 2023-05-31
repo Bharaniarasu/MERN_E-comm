@@ -66,6 +66,9 @@ const productSchema = new mongoose.Schema({
       comments: { type: String, required: true },
     },
   ],
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,
+  },
   createdAt: {
     type: Date,
     default: Date.now(),

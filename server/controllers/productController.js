@@ -4,6 +4,8 @@ const ApiFeatures = require("../utils/apiFeatures");
 const ErrorHandler = require("../utils/errorHandler");
 //get all products - /api/v1/products
 exports.getProducts = async (req, res, next) => {
+  console.log(req.cookies);
+
   const productPerPage = 3;
   const filteredProduct = new ApiFeatures(productModel.find(), req.query)
     .search()
@@ -19,6 +21,9 @@ exports.getProducts = async (req, res, next) => {
 };
 //create new product - /api/v1/product/new
 exports.newProduct = catchAsyncErrors(async (req, res, next) => {
+  // adding schema on product about product creator
+  console.log("user    ", req.user);
+  req.body.createdBy = req.user.id;
   //adding datas with schema to database
   const product = await productModel.create(req.body);
   res.status(201).json({
