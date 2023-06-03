@@ -4,7 +4,7 @@ const ErrorHandler = require("../utils/errorHandler");
 const GetUserToken = require("../utils/getUserToken");
 const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto");
-//user data create
+//Create New user - /api/v1/register
 exports.createUser = catchAsyncErrors(async (req, res, next) => {
   const { name, email, password, role, avatar } = req.body;
   const user = await userModel.create({ name, email, password, role, avatar });
@@ -15,7 +15,7 @@ exports.createUser = catchAsyncErrors(async (req, res, next) => {
   // console.log(token);
   GetUserToken(user, 201, res);
 });
-//get all userdata
+//get all userdata - /api/v1/userlist
 exports.getUser = catchAsyncErrors(async (req, res, next) => {
   const user = await userModel.find();
 
@@ -24,7 +24,7 @@ exports.getUser = catchAsyncErrors(async (req, res, next) => {
     user,
   });
 });
-//login operation
+//login operation - /api/v1/login , with body email and password
 exports.loginUser = catchAsyncErrors(async (req, res, next) => {
   const { email, password } = req.body;
   console.log(req.body);
@@ -44,7 +44,7 @@ exports.loginUser = catchAsyncErrors(async (req, res, next) => {
   }
 });
 
-//user logout operation
+//user logout operation - /api/v1/logout
 // clear cookie will logout the user
 exports.logoutUser = (req, res, next) => {
   res
@@ -58,6 +58,8 @@ exports.logoutUser = (req, res, next) => {
       message: "Logged Out Success",
     });
 };
+
+//forgot password - send token to reset password  - /api/v1/forgot/password
 exports.forgotPassword = catchAsyncErrors(async (req, res, next) => {
   const user = await userModel.findOne({ email: req.body.email });
   if (!user) {
@@ -120,4 +122,30 @@ exports.resetPassword = catchAsyncErrors(async (req, res, next) => {
     await user.save({ validateBeforeSave: false });
     GetUserToken(user, 201, res);
   }
+});
+
+//Get User Profile -/api/v1/myprofile
+exports.getUserProfile = catchAsyncErrors(async (req, res, next) => {
+  const userId = req.user.id;
+  const user = await userModel.findById(userId);
+  res.status(200).json({
+    success: true,
+    user,
+  });
+});
+
+//Change logged in user password - /api/v1/myprofile/resetpassword
+exports.resetUserPassword = catchAsyncErrors(async (req, res, next) => {
+  const user = await userModel.findById(req.user.id).select("+password");
+
+  if (!(await user.isValidPassword(req.body.enteredOldPassword))) {
+    next(new ErrorHandler("Please Enter valid old password."));
+  }
+
+  user.password = req.body.enteredNewPassword;
+  await user.save();
+  res.status(200).json({
+    success: true,
+    message: "Password Changed.",
+  });
 });
