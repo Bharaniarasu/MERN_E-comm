@@ -15,15 +15,7 @@ exports.createUser = catchAsyncErrors(async (req, res, next) => {
   // console.log(token);
   GetUserToken(user, 201, res);
 });
-//get all userdata - /api/v1/userlist
-exports.getUser = catchAsyncErrors(async (req, res, next) => {
-  const user = await userModel.find();
 
-  res.status(201).json({
-    success: true,
-    user,
-  });
-});
 //login operation - /api/v1/login , with body email and password
 exports.loginUser = catchAsyncErrors(async (req, res, next) => {
   const { email, password } = req.body;
@@ -148,4 +140,82 @@ exports.resetUserPassword = catchAsyncErrors(async (req, res, next) => {
     success: true,
     message: "Password Changed.",
   });
+});
+
+//update user profile datas -  /api/v1/myprofile/updateprofile
+exports.updateUserProfile = catchAsyncErrors(async (req, res, next) => {
+  const newUserData = {
+    name: req.body.name,
+    email: req.body.email,
+    avatar: req.body.avatar,
+  };
+  const user = await userModel.findByIdAndUpdate(req.user.id, newUserData, {
+    //new to show updated data only
+    new: true,
+    //set validation based on schema
+    runValidators: true,
+  });
+
+  res.status(200).json({
+    success: true,
+    message: "User Data Updated.",
+  });
+});
+
+//ADMIN - get all userdata - /api/v1/userlist
+exports.getAllUser = catchAsyncErrors(async (req, res, next) => {
+  const user = await userModel.find();
+
+  res.status(200).json({
+    success: true,
+    user,
+  });
+});
+//ADMIN - get all userdata - /api/v1/admin/user:id
+exports.getUser = catchAsyncErrors(async (req, res, next) => {
+  const user = await userModel.findById(req.params.id);
+  if (!user) {
+    next(new ErrorHandler(`User not found for the Given ID  ${req.params.id}`));
+  }
+  res.status(200).json({
+    success: true,
+    user,
+  });
+});
+//ADMIN - update user profile datas -  /api/v1/admin/updateuser
+exports.updateUser = catchAsyncErrors(async (req, res, next) => {
+  const newUserData = {
+    name: req.body.name,
+    email: req.body.email,
+    avatar: req.body.avatar,
+    role: req.body.role,
+  };
+  const user = await userModel.findByIdAndUpdate(req.params.id, newUserData, {
+    //new to show updated data only
+    new: true,
+    //set validation based on schema
+    runValidators: true,
+  });
+
+  res.status(200).json({
+    success: true,
+    message: "User Data Updated.",
+  });
+});
+//Admin - delete user profile - api/v1/admin/deleteuser
+exports.deleteUser = catchAsyncErrors(async (req, res, next) => {
+  const user = await userModel.findById(req.params.id);
+  if (!user) {
+    return res.status(404).json({
+      success: false,
+      message: "User NOT FOUND",
+    });
+  } else {
+    await user.deleteOne();
+
+    res.status(200).json({
+      success: true,
+      message: "User Data Deleted.",
+    });
+  }
 });

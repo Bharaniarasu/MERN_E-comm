@@ -1,9 +1,8 @@
 const ErrorHandler = require("../utils/errorHandler");
 
 module.exports = (err, req, res, next) => {
-  err.statuscode = err.statuscode || 400;
+  err.statuscode = err.statuscode || 500;
 
-  console.log(process.env.NODE_ENV);
   if (process.env.NODE_ENV == "development") {
     res.status(err.statuscode).json({
       success: false,
@@ -20,18 +19,21 @@ module.exports = (err, req, res, next) => {
       //  message= ["Please enter Product Description", "Please enter the Product Name"];
       //Error convert array into string, so we call that
       error = new Error(message);
+      err.statuscode = 400;
     }
     ////CastError
     //when we access with invalid id,It will run
     //mongoose convert string id into object before check that is existing or not
-    if ((err.name = "CastError")) {
+    else if ((err.name = "CastError")) {
       message = `Resource NOT FOUND for this ${err.path}`;
       error = new Error(message);
+      err.statuscode = 400;
     }
     //handle error for chech DUplicate values
-    if (err.code == 11000) {
+    else if (err.code == 11000) {
       message = `Dulicate ${Object.keys(err.keyValue)}`;
       error = new Error(message);
+      err.statuscode = 400;
     }
 
     res.status(err.statuscode).json({
