@@ -42,19 +42,14 @@ router
 
 //ADMIN -  Get all user datas -/api/v1/userlist
 router
-  .route("/userlist")
+  .route("/admin/users")
   .get(isAuthenticatedUser, autheriseUserRole("admin"), getAllUser);
 
-//ADMIN - Get a particular user data
+//ADMIN - Get a particular user data - update and delete
 router
-  .route("/user/:id")
-  .get(isAuthenticatedUser, autheriseUserRole("admin"), getUser);
-
-router
-  .route("/admin/updateuser/:id")
-  .put(isAuthenticatedUser, autheriseUserRole("admin"), updateUser);
-router
-  .route("/admin/deleteuser/:id")
+  .route("/admin/user/:id")
+  .get(isAuthenticatedUser, autheriseUserRole("admin"), getUser)
+  .put(isAuthenticatedUser, autheriseUserRole("admin"), updateUser)
   .delete(isAuthenticatedUser, autheriseUserRole("admin"), deleteUser);
 
 module.exports = router;

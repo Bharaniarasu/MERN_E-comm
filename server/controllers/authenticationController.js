@@ -162,7 +162,7 @@ exports.updateUserProfile = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
-//ADMIN - get all userdata - /api/v1/userlist
+//ADMIN - get all userdata - /api/v1/admin/users
 exports.getAllUser = catchAsyncErrors(async (req, res, next) => {
   const user = await userModel.find();
 
@@ -182,7 +182,7 @@ exports.getUser = catchAsyncErrors(async (req, res, next) => {
     user,
   });
 });
-//ADMIN - update user profile datas -  /api/v1/admin/updateuser
+//ADMIN - update user profile datas -  /api/v1/admin/user/:id
 exports.updateUser = catchAsyncErrors(async (req, res, next) => {
   const newUserData = {
     name: req.body.name,
@@ -202,7 +202,7 @@ exports.updateUser = catchAsyncErrors(async (req, res, next) => {
     message: "User Data Updated.",
   });
 });
-//Admin - delete user profile - api/v1/admin/deleteuser
+//Admin - delete user profile - api/v1/admin/user/:id
 exports.deleteUser = catchAsyncErrors(async (req, res, next) => {
   const user = await userModel.findById(req.params.id);
   if (!user) {

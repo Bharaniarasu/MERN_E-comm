@@ -2,6 +2,8 @@ const express = require("express");
 const app = express();
 const products = require("./routes/products");
 const authentication = require("./routes/authentication");
+const order = require("./routes/order");
+
 const cookieParser = require("cookie-parser");
 const errorMiddleware = require("./middlewares/error");
 //to set express to accept json post request
@@ -10,6 +12,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use("/api/v1", products);
 app.use("/api/v1", authentication);
+app.use("/api/v1", order);
 
 //if url not matches it came to the below middleware
 app.use(errorMiddleware);
