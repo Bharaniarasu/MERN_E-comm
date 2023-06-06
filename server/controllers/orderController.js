@@ -121,7 +121,7 @@ const updateStock = async (productId, quantity, next) => {
 //ADMIN - Delete Order - api/v1/order/:id
 exports.deleteOrder = catchAsyncErrors(async (req, res, next) => {
   const order = await OrderModel.findById(req.params.id);
-  console.log(order);
+  // console.log(order);
   if (!order) {
     next(new ErrorHandler("Order does not Exists."));
   }

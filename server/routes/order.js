@@ -17,7 +17,7 @@ const router = express.Router();
 router.route("/order/new").post(isAuthenticatedUser, createOrder);
 router.route("/order/:id").get(isAuthenticatedUser, getSingleOrderData);
 router.route("/myorders").get(isAuthenticatedUser, getLoginOrderData);
-//Admin
+//Admin Routes
 router
   .route("/orders")
   .get(isAuthenticatedUser, autheriseUserRole("admin"), getAllUserOrders);
