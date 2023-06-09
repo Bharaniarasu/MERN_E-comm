@@ -13,7 +13,9 @@ exports.isAuthenticatedUser = catchAsyncErrors(async (req, res, next) => {
   }
 
   const decode = jwt.verify(token, process.env.JWT_SECRET);
-  //   console.log(decode);
+
+  // console.log("decode - > ", decode);
+  // decode - >  { id: '647f30983c5ff8550df13103', iat: 1686289223, exp: 1686894023 }
   //upcoming middlewares can access the req.user
   req.user = await userModel.findById(decode.id);
   // console.log("user  ", req.user);
@@ -25,7 +27,7 @@ exports.isAuthenticatedUser = catchAsyncErrors(async (req, res, next) => {
 exports.autheriseUserRole =
   (...roles) =>
   (req, res, next) => {
-    console.log(req.user.role);
+    // console.log(req.user.role);
     if (!roles.includes(req.user.role)) {
       return next(
         new ErrorHandler(
