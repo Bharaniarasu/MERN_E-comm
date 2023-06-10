@@ -13,6 +13,10 @@ exports.getProducts = async (req, res, next) => {
     .paginate(productPerPage);
   //filterProduct returns a query
   const products = await filteredProduct.query;
+  //promise settimeout to delay the output
+  // const promise = await new Promise((resolve) => setTimeout(resolve, 2000));
+  // to set manual server error
+  // return next(new ErrorHandler("Unable to get Data"));
   res.status(200).json({
     success: true,
     count: products.length,

@@ -6,7 +6,7 @@ module.exports = (err, req, res, next) => {
   if (process.env.NODE_ENV == "development") {
     res.status(err.statuscode).json({
       success: false,
-      message: err,
+      message: err.message,
       stack: err.stack,
     });
   } else if (process.env.NODE_ENV == "production") {
@@ -25,6 +25,7 @@ module.exports = (err, req, res, next) => {
     //when we access with invalid id,It will run
     //mongoose convert string id into object before check that is existing or not
     else if ((err.name = "CastError")) {
+      console.log(err);
       message = `Resource NOT FOUND for this ${err.path}`;
       error = new Error(message);
       err.statuscode = 400;

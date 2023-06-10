@@ -15,9 +15,7 @@ const {
 } = require("../middlewares/authenticate");
 const router = express.Router();
 //route to get the db datas //show the products if the user is authenticated //show datas only for autherised user roles
-router
-  .route("/products")
-  .get(isAuthenticatedUser, autheriseUserRole("admin"), getProducts);
+router.route("/products").get(getProducts);
 //route to add a new data
 router
   .route("/product/new")
