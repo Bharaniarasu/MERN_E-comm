@@ -5,7 +5,7 @@ const ProductSlice = createSlice({
   initialState: { loading: false },
   reducers: {
     productRequest: (state, action) => {
-      return { loading: true };
+      return action.payload;
     },
     productSuccess: (state, action) => {
       return { loading: false, product: action.payload.product };

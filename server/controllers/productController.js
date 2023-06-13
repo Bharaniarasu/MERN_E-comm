@@ -13,14 +13,18 @@ exports.getProducts = async (req, res, next) => {
     .paginate(productPerPage);
   //filterProduct returns a query
   const products = await filteredProduct.query;
+  //Get all products count by using product model to pad=ginate on frontend
+  const totalProductCount = await productModel.countDocuments();
+
   //promise settimeout to delay the output
   // const promise = await new Promise((resolve) => setTimeout(resolve, 2000));
   // to set manual server error
   // return next(new ErrorHandler("Unable to get Data"));
   res.status(200).json({
     success: true,
-    count: products.length,
+    count: totalProductCount,
     products,
+    productPerPage,
   });
 };
 //create new product - /api/v1/product/new

@@ -6,11 +6,10 @@ import {
 } from "../slices/productSlice";
 export const getProduct = (id) => async (dispatch) => {
   try {
-    dispatch(productRequest());
+    dispatch(productRequest({ loading: true }));
     const { data } = await axios.get(
       `http://localhost:8000/api/v1/product/${id}`
     );
-    console.log(data);
 
     dispatch(productSuccess(data));
   } catch (error) {

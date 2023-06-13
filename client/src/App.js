@@ -14,11 +14,13 @@ function App() {
         <HelmetProvider>
           <Header />
           <ToastContainer theme="dark" position="bottom-center" />
+          <div className="container container-fluid">
+            <Routes>
+              <Route exact path="/" element={<Home />} />
+              <Route exact path="/product/:id" element={<Product />} />
+            </Routes>
+          </div>
 
-          <Routes>
-            <Route exact path="/" element={<Home />} />
-            <Route exact path="/product/:id" element={<Product />} />
-          </Routes>
           <Footer />
         </HelmetProvider>
       </div>
