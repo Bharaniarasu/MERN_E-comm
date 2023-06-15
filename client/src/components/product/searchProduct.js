@@ -6,12 +6,17 @@ import {
 } from "../redux/actions/productsAction";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../layouts/loader";
-import ProductCard from "./productCard/productCard";
+import ProductCard from "../home/productCard/productCard";
 import { toast } from "react-toastify";
 import Pagination from "react-js-pagination";
-const Home = () => {
+import { useParams } from "react-router-dom";
+import Slider from "rc-slider";
+import Tooltip from "rc-tooltip";
+
+const SearchProduct = () => {
+  const { query } = useParams();
   const [currentPageNo, setCurrentPageNo] = useState(1);
-  console.log(currentPageNo);
+  const [price, setPrice] = useState([1, 10000]);
   const dispatch = useDispatch();
   const { products, loading, error, productsCount, productPerPage } =
     useSelector((state) => state.ProductsState);
@@ -23,8 +28,8 @@ const Home = () => {
       return toast.error(error);
     }
     //send dispatch to getProducts as an argument
-    dispatch(getProducts(null, null, currentPageNo));
-  }, [error, dispatch, currentPageNo]);
+    dispatch(getProducts(query, price, currentPageNo));
+  }, [error, dispatch, currentPageNo, query, price]);
   return (
     <>
       {!loading ? (
@@ -33,10 +38,41 @@ const Home = () => {
 
           <section id="products" className="container mt-5">
             <div className="row">
-              {products &&
-                products.map((product) => (
-                  <ProductCard col={3} product={product} key={product._id} />
-                ))}
+              <div className="col-6 col-md-3 mb-4 mt-4 ">
+                <div className="px-5">
+                  <Slider
+                    range={true}
+                    marks={{ 1: "₹1", 10000: "₹10000" }}
+                    min={1}
+                    max={10000}
+                    defaultValue={price}
+                    onAfterChange={(price) => {
+                      setPrice(price);
+                    }}
+                    handleRender={(renderProps) => {
+                      return (
+                        <Tooltip
+                          overlay={`₹ ${renderProps.props["aria-valuenow"]}`}
+                        >
+                          <div {...renderProps.props}></div>
+                        </Tooltip>
+                      );
+                    }}
+                  />
+                </div>
+              </div>
+              <div className="col-6 col-md-9">
+                <div className="row">
+                  {products &&
+                    products.map((product) => (
+                      <ProductCard
+                        col={4}
+                        product={product}
+                        key={product._id}
+                      />
+                    ))}
+                </div>
+              </div>
             </div>
           </section>
 
@@ -65,4 +101,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default SearchProduct;

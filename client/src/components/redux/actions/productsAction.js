@@ -4,12 +4,18 @@ import {
   productsRequest,
   productsSuccess,
 } from "../slices/productsSlice";
-export const getProducts = (pageNo) => async (dispatch) => {
+export const getProducts = (query, price, pageNo) => async (dispatch) => {
   try {
     dispatch(productsRequest({ loading: true }));
-    const { data } = await axios.get(
-      `http://localhost:8000/api/v1/products?page=${pageNo}`
-    );
+    let uri = `http://localhost:8000/api/v1/products?page=${pageNo}`;
+    if (query) {
+      uri += `&keyword=${query}`;
+    }
+    if (price) {
+      uri += `&price[gte]=${price[0]}&price[lte]=${price[1]}`;
+    }
+    console.log(uri);
+    const { data } = await axios.get(uri);
     dispatch(productsSuccess({ data }));
   } catch (error) {
     dispatch(productsFailure(error.response.data.message));

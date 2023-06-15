@@ -6,23 +6,29 @@ const ErrorHandler = require("../utils/errorHandler");
 exports.getProducts = async (req, res, next) => {
   console.log(req.cookies);
 
-  const productPerPage = 3;
-  const filteredProduct = new ApiFeatures(productModel.find(), req.query)
-    .search()
-    .filter()
-    .paginate(productPerPage);
-  //filterProduct returns a query
-  const products = await filteredProduct.query;
+  const productPerPage = 4;
+  // variable executes the query so we returned on a function
+  let filterQuery = () => {
+    return new ApiFeatures(productModel.find(), req.query).search().filter();
+  };
+  //to get filtered product count
+  const filteredCount = await filterQuery().query.countDocuments({});
   //Get all products count by using product model to pad=ginate on frontend
   const totalProductCount = await productModel.countDocuments();
-
+  //set current product count to show or hide pagination
+  let productCount = totalProductCount;
+  if (filteredCount !== totalProductCount) {
+    productCount = filteredCount;
+  }
+  //filterProduct returns a query
+  const products = await filterQuery().paginate(productPerPage).query;
   //promise settimeout to delay the output
   // const promise = await new Promise((resolve) => setTimeout(resolve, 2000));
   // to set manual server error
   // return next(new ErrorHandler("Unable to get Data"));
   res.status(200).json({
     success: true,
-    count: totalProductCount,
+    count: productCount,
     products,
     productPerPage,
   });
