@@ -25,7 +25,12 @@ body {
   background-clip: padding-box;
   border-radius: 5px;
 }
-
+.rc-slider-track {
+  position: absolute;
+  height: 4px;
+  background-color: #fa9c23 !important;
+  border-radius: 6px;
+}
 nav {
   background-color: #232f3e;
   padding: 1rem 1rem;

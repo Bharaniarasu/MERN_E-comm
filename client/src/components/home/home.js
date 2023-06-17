@@ -23,7 +23,7 @@ const Home = () => {
       return toast.error(error);
     }
     //send dispatch to getProducts as an argument
-    dispatch(getProducts(null, null, currentPageNo));
+    dispatch(getProducts(null, null, null, null, currentPageNo));
   }, [error, dispatch, currentPageNo]);
   return (
     <>

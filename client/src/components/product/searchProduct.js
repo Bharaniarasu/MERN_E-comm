@@ -16,20 +16,35 @@ import Tooltip from "rc-tooltip";
 const SearchProduct = () => {
   const { query } = useParams();
   const [currentPageNo, setCurrentPageNo] = useState(1);
-  const [price, setPrice] = useState([1, 10000]);
+  const [price, setPrice] = useState([1, 1000]);
+  const [updatedPrice, setUpdatedPrice] = useState(price);
+  const [category, setCategory] = useState("");
+  const [rating, setRating] = useState(null);
+  const categories = [
+    "Laptops",
+    "Mobiles",
+    "Electronics",
+    "Accessories",
+    "Headphones",
+    "Books",
+    "Footwear",
+    "Sports",
+    "Home",
+  ];
   const dispatch = useDispatch();
   const { products, loading, error, productsCount, productPerPage } =
     useSelector((state) => state.ProductsState);
   const pageNoHandler = (pageNo) => {
     setCurrentPageNo(pageNo);
   };
+
   useEffect(() => {
     if (error) {
       return toast.error(error);
     }
     //send dispatch to getProducts as an argument
-    dispatch(getProducts(query, price, currentPageNo));
-  }, [error, dispatch, currentPageNo, query, price]);
+    dispatch(getProducts(query, price, category, rating, currentPageNo));
+  }, [error, dispatch, currentPageNo, query, updatedPrice, category, rating]);
   return (
     <>
       {!loading ? (
@@ -39,14 +54,16 @@ const SearchProduct = () => {
           <section id="products" className="container mt-5">
             <div className="row">
               <div className="col-6 col-md-3 mb-4 mt-4 ">
-                <div className="px-5">
+                {/*price filter start*/}
+                {/* //mouse up to change price filter on mouse leave ffrom slider */}
+                <div className="px-5" onMouseUp={() => setUpdatedPrice(price)}>
                   <Slider
                     range={true}
-                    marks={{ 1: "₹1", 10000: "₹10000" }}
+                    marks={{ 1: "₹1", 1000: "₹1000" }}
                     min={1}
-                    max={10000}
+                    max={1000}
                     defaultValue={price}
-                    onAfterChange={(price) => {
+                    onChange={(price) => {
                       setPrice(price);
                     }}
                     handleRender={(renderProps) => {
@@ -60,6 +77,49 @@ const SearchProduct = () => {
                     }}
                   />
                 </div>
+                {/*price filter end*/}
+
+                {/* Category filter start*/}
+                <hr className="my-5" />
+                <div className="mt-5">
+                  <h3 className="mb-4">Catagories</h3>
+                  <ul className="pl-0">
+                    {categories.map((category) => (
+                      <li
+                        className="p-1"
+                        style={{ cursor: "pointer", listStyle: "none" }}
+                        key={category}
+                        onClick={(e) => setCategory(category)}
+                      >
+                        {category}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                {/* catagory filter end*/}
+                {/* Ratings Filter start*/}
+                <hr className="my-5" />
+                <h3>Ratings</h3>
+                <ul className="pl-0">
+                  {[5, 4, 3, 2, 1].map((star) => (
+                    <li
+                      className="p-1"
+                      style={{ cursor: "pointer", listStyle: "none" }}
+                      key={star}
+                      onClick={(e) => setRating(star)}
+                    >
+                      <div className="rating-outer">
+                        <div
+                          className="rating-inner"
+                          style={{ width: `${star * 20}%` }}
+                        ></div>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+                {/* Ratings Filter end*/}
+
+                <hr className="my-5" />
               </div>
               <div className="col-6 col-md-9">
                 <div className="row">
