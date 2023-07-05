@@ -3,10 +3,13 @@ const app = express();
 const products = require("./routes/products");
 const authentication = require("./routes/authentication");
 const order = require("./routes/order");
+const path = require("path");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const errorMiddleware = require("./middlewares/error");
-app.use(cors());
+//set uploads folter to static to access files from that folder
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use(cors({ credentials: true, origin: true }));
 //to set express to accept json post request
 app.use(express.json());
 // with out cookie parser we cannot get cookies // it will undefined always

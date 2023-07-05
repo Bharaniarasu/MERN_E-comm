@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
 import MetaTag from "../layouts/metaTag";
-import {
-  getProducts,
-  getProductsPerPage,
-} from "../redux/actions/productsAction";
+import { getProducts } from "../redux/actions/productAction";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../layouts/loader";
 import ProductCard from "./productCard/productCard";
@@ -11,7 +8,7 @@ import { toast } from "react-toastify";
 import Pagination from "react-js-pagination";
 const Home = () => {
   const [currentPageNo, setCurrentPageNo] = useState(1);
-  console.log(currentPageNo);
+  // console.log(currentPageNo);
   const dispatch = useDispatch();
   const { products, loading, error, productsCount, productPerPage } =
     useSelector((state) => state.ProductsState);

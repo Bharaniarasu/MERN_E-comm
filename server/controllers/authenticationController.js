@@ -6,11 +6,16 @@ const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto");
 //Create New user - /api/v1/register
 exports.createUser = catchAsyncErrors(async (req, res, next) => {
-  const { name, email, password, role, avatar } = req.body;
-  const user = await userModel.create({ name, email, password, role, avatar });
-
-  //call getToken to get the JWT token for user authentication
-  const token = user.getJwtToken();
+  const { name, email, password } = req.body;
+  let avatar;
+  if (req.file) {
+    let BASE_URL = process.env.BACKEND_URL;
+    if (process.env.NODE_ENV === "production") {
+      BASE_URL = `${req.protocol}://${req.get("host")}`;
+    }
+    avatar = `${BASE_URL}/uploads/users/${req.file.originalname}`;
+  }
+  const user = await userModel.create({ name, email, password, avatar });
 
   // console.log(token);
   GetUserToken(user, 201, res);
@@ -21,16 +26,16 @@ exports.loginUser = catchAsyncErrors(async (req, res, next) => {
   const { email, password } = req.body;
   console.log(req.body);
   if (!email || !password) {
-    next(new ErrorHandler("Please Enter Email and Password"));
+    return next(new ErrorHandler("Please Enter Email and Password"));
   }
   //get user mail and password. password not shown on find. so we get that from select(+password)
   const user = await userModel.findOne({ email }).select("+password");
   // console.log(user);
   //validating userdata
   if (!user) {
-    next(new ErrorHandler("Invalid Email or Password", 400));
+    return next(new ErrorHandler("Invalid Email or Password", 400));
   } else if (!(await user.isValidPassword(password))) {
-    next(new ErrorHandler("Invalid Email or Password", 400));
+    return next(new ErrorHandler("Invalid Email or Password", 400));
   } else {
     GetUserToken(user, 201, res);
   }
@@ -118,8 +123,7 @@ exports.resetPassword = catchAsyncErrors(async (req, res, next) => {
 
 //Get User Profile -/api/v1/myprofile
 exports.getUserProfile = catchAsyncErrors(async (req, res, next) => {
-  const userId = req.user.id;
-  const user = await userModel.findById(userId);
+  const user = await userModel.findById(req.user.id);
   res.status(200).json({
     success: true,
     user,

@@ -1,4 +1,6 @@
 const express = require("express");
+const multer = require("multer");
+const path = require("path");
 const {
   createUser,
   getAllUser,
@@ -18,8 +20,20 @@ const {
   autheriseUserRole,
 } = require("../middlewares/authenticate");
 const router = express.Router();
+
+//upoad handler
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, path.join(__dirname, "..", "uploads/users"));
+    },
+    filename: (req, file, cb) => {
+      cb(null, file.originalname);
+    },
+  }),
+});
 //Register a new user - /api/v1/register
-router.route("/register").post(createUser);
+router.route("/register").post(upload.single("avatar"), createUser);
 
 //login route /api/v1/login
 router.route("/login").post(loginUser);

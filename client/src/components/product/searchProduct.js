@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
 import MetaTag from "../layouts/metaTag";
-import {
-  getProducts,
-  getProductsPerPage,
-} from "../redux/actions/productsAction";
+import { getProducts } from "../redux/actions/productAction";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../layouts/loader";
 import ProductCard from "../home/productCard/productCard";
@@ -43,7 +40,7 @@ const SearchProduct = () => {
       return toast.error(error);
     }
     //send dispatch to getProducts as an argument
-    dispatch(getProducts(query, price, category, rating, currentPageNo));
+    dispatch(getProducts(query, updatedPrice, category, rating, currentPageNo));
   }, [error, dispatch, currentPageNo, query, updatedPrice, category, rating]);
   return (
     <>
