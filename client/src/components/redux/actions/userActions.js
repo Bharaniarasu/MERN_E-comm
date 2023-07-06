@@ -12,6 +12,9 @@ import {
   registerFailed,
   registerRequest,
   registerSuccess,
+  updateProfileFailed,
+  updateProfileRequest,
+  updateProfileSuccess,
 } from "../slices/authSlice";
 //Login action controller
 export const login = (email, password) => async (dispatch) => {
@@ -74,5 +77,25 @@ export const logout = async (dispatch) => {
     dispatch(logoutSuccess());
   } catch (error) {
     dispatch(logoutFailed(error.response.data.message));
+  }
+};
+
+//Update  User controller
+export const updateProfile = (userData) => async (dispatch) => {
+  console.log(userData);
+  let uri = "/api/v1/register";
+  try {
+    dispatch(updateProfileRequest());
+    //To accept  avatar images
+    const config = {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    };
+    const { data } = await axios.put(uri, userData, config);
+    // console.log(data);
+    dispatch(updateProfileSuccess(data));
+  } catch (error) {
+    dispatch(updateProfileFailed(error.response.data.message));
   }
 };

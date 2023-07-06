@@ -1,8 +1,14 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { loadUser } from "../redux/actions/userActions";
+import { Link } from "react-router-dom";
 
 const Profile = () => {
   const { user } = useSelector((state) => state.AuthState);
+  const dispatch = useDispatch();
+  // useEffect(() => {
+  //   dispatch(loadUser);
+  // }, [dispatch]);
   return (
     <div className="container container-fluid">
       <h2 className="mt-5 ml-5">My Profile</h2>
@@ -15,13 +21,13 @@ const Profile = () => {
               alt=""
             />
           </figure>
-          <a
-            href="#"
+          <Link
+            to="/user/myprofile/update"
             id="edit_profile"
             className="btn btn-primary btn-block my-5"
           >
             Edit Profile
-          </a>
+          </Link>
         </div>
 
         <div className="col-12 col-md-5">
